@@ -36,6 +36,7 @@ int count_dir(char *path){
         if (path[i] == ';')
             count++;
         
+
     }
     return count;
 
@@ -70,26 +71,4 @@ char **parse_path(char *path){
     }
 
     return dir;
-}
-
-int main(){
-
-    char envName[] = "PATH";
-    char* path = get_path(envName);
-    char **directory = parse_path(path);
-    int count = count_dir(path);
-
-    for(int i = 0; i < count; i++){
-        printf("%s\n" , directory[i]);
-    }
-
-    for(int i = 0; i < count; i++){
-        free(directory[i]);
-    }
-
-    free(directory);
-    
-    free(path);
-    return 0;
-
 }
