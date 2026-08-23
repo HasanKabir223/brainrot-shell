@@ -3,24 +3,26 @@
 
 char *get_path(char envName[]){
     // getting the temporary bytes to store in Memory
+    // asking how many bytes are needed to store the Environment Variable
     DWORD charCount = GetEnvironmentVariableA(envName , NULL , 0);
 
+    // if the charCount is 0, it means the Environment Variable does not exist or an error occurred
     if(charCount == 0){
         printf("It is fucked MANNN %lu\n " , GetLastError());
         return NULL;
     }
-    // Allocation of the Memory
+    // Allocation of the Memory on the basis of the
     char* buffer = (char*)malloc(charCount + 1);
     if(buffer == NULL){
         printf("Memory Allocation Failed");
         return NULL;
     }
 
-    // Retrieving the Memory
+    // Retrieving the Memory based on the memory located in the heap
     DWORD result = GetEnvironmentVariableA(envName , buffer , charCount + 1);
     
     if(result > 0){
-        printf("PATH is Done");
+        printf("PATH is Done\n");
         return buffer;
     }else
         printf("Failed to retrieve the Path: %lu\n" , GetLastError());
