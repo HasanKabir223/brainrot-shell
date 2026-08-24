@@ -14,7 +14,7 @@ first of all , we will get the command and also get the PATH variable from the e
 
 char* resolve_path(char *command){
     char *path = get_path("PATH");
-    char **dirs = parse_path(path);
+    char **dirs = parse_path(path); // spilt(';')
     int num_dir = count_dir(path);
 
     for(int i = 0; i< num_dir; i++){

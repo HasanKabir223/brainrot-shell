@@ -86,7 +86,7 @@ int main(){
 
             free(resolved_command);
         }else
-            printf("brainrot: command not found: %s\n" , command);
+            printf("brainrot: command not found -> %s\n" , command);
 
 
 

@@ -12,6 +12,7 @@ int count_args(char *command){
         if (command[i] != ' ') char_count++;
     }
 
+    // TODO: mainly for edge cases like: ""
     if (char_count == 0 || command[0] == '\0') return 0;
 
     if (command[0] == ' ')
@@ -68,28 +69,4 @@ char **parse_args(char *command){
     }
     output[index] = NULL;
     return output;
-}
-
-
-int main(){
-    
-    char *command = "hello          world";
-    int count = count_args(command);
-    char **output = parse_args(command);
-    printf("number of args is: %d\n" , count);
-    printf("printing the output\n");
-
-    for (int i = 0; output[i] != NULL; i++)
-    {
-        printf("argv[%d] = %s\n", i, output[i]);
-    }
-
-    for (int i = 0; output[i] != NULL; i++)
-    {
-        free(output[i]);
-    }
-
-    free(output);
-
-    return 0;
 }
