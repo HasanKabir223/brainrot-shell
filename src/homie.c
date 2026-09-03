@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <windows.h>
+#include "baddie.h"
 
 bool is_builtin(char *command){
 
@@ -39,7 +41,29 @@ bool is_builtin(char *command){
     
 }
 
-void execute_builtin(char *agrs){
-    if (strcmp(agrs , "about") == 0)
+void execute_builtin(char *command){
+    char **args = parse_args(command);
+    if (strcmp(args[0] , "vibe") == 0)
         printf("\n$brainrot:/> NIGGA v1.0");
+
+    else if (strcasecmp(args[0] , "whereami") == 0){
+        // printf("whereami is called");
+        TCHAR currentDir[MAX_PATH];
+
+    // Fetch the current directory
+        DWORD result = GetCurrentDirectory(MAX_PATH, currentDir);
+
+    if (result == 0) {
+        printf("Failed to get current directory. Error code: %lu\n", GetLastError());
+        
+    } else if (result > MAX_PATH) {
+        printf("Buffer too small. Required size: %lu characters.\n", result);
+        
+    }
+
+    // Print the directory path
+    // Note: %s works if your project uses ANSI characters. 
+    // If your project uses UNICODE, use wprintf(L"Current Directory: %s\n", currentDir);
+    printf("\nCurrent Directory: %s", currentDir);
+    }
 }

@@ -81,7 +81,10 @@ int main(){
 
         if (is_builtin(args[0]) == true){
             printf("$brainrot: command %s found in built-in" , args[0]);
-            execute_builtin(args[0]);
+            // pasing the command rather than the arguments
+            execute_builtin(command);
+            
+
         }else
             printf("'%s' not found" , args[0]);
 
