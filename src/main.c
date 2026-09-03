@@ -5,6 +5,8 @@
 #include<windows.h>
 #include "resolver.h"
 #include "side_chick.h"
+#include "baddie.h"
+#include "homie.h"
 
 bool is_background(char *command){
     // background process contains the '&'
@@ -14,6 +16,12 @@ bool is_background(char *command){
         return true;
 
     return false;
+}
+
+void to_lowercase(char *command) {
+    for (int i = 0; command[i] != '\0'; i++) {
+        command[i] = tolower((unsigned char)command[i]);
+    }
 }
 
 void execute_external(char* command , bool is_bg){
@@ -56,9 +64,12 @@ int main(){
     char* command = malloc(LEN);
 
     while (1){
-        printf("$brainrot:/> ");
+        printf("\n$brainrot:/> ");
         // stdin -> takes the input from the user
         fgets(command , LEN , stdin); // taking  the input from user 
+
+        // to lowercase the command
+        to_lowercase(command);
 
         // TODO: ['e' , 'x' , 'i' , 't' , '\n' , '\0'] to ['e' , 'x' , 'i' , 't' , '\0']
         size_t len = strlen(command);
@@ -66,27 +77,36 @@ int main(){
             command[len-1] = '\0';
         }
 
-        bool check_bg = is_background(command);
+        char **args = parse_args(command);
+
+        if (is_builtin(args[0]) == true){
+            printf("$brainrot: command %s found in built-in" , args[0]);
+            execute_builtin(args[0]);
+        }else
+            printf("'%s' not found" , args[0]);
+
+        // bool check_bg = is_background(command);
         
-        if (check_bg){
-            if (len >= 2 && command[len - 2] == ' ')
-                command[len - 2] = '\0';
-            else
-                command[len - 2] = '\0';
-        }
+        // if (check_bg){
+        //     if (len >= 2 && command[len - 2] == ' ')
+        //         command[len - 2] = '\0';
+        //     else
+        //         command[len - 2] = '\0';
+        // }
         // exiting the loop
         if(strcmp(command , "exit") == 0)
             exit(0);
 
         
-        char* resolved_command = resolve_path(command);
+        
+        // char* resolved_command = resolve_path(command);
 
-        if(resolved_command != NULL){
-            execute_external(command, check_bg);
+        // if(resolved_command != NULL){
+        //     execute_external(command, check_bg);
 
-            free(resolved_command);
-        }else
-            printf("brainrot: command not found -> %s\n" , command);
+        //     free(resolved_command);
+        // }else
+        //     printf("brainrot: command not found -> %s\n" , command);
 
 
 
