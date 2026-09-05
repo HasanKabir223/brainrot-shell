@@ -7,6 +7,7 @@ int count_args(char *command){
     int char_count = 0;
 
     for (int i = 1; command[i] != '\0'; i++){
+        // current index has the char and the prev char has the white-space
         if (command[i] != ' ' && command[i-1] == ' ') count++;
 
         if (command[i] != ' ') char_count++;
@@ -20,7 +21,8 @@ int count_args(char *command){
     else
         return count + 1;
 }
-
+// TODO: "Hello world" -> ["Hello" , "World"]
+// single string to array of strings
 char **parse_args(char *command){
 
     int args_num = count_args(command);

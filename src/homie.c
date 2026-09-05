@@ -4,9 +4,35 @@
 #include <windows.h>
 #include "baddie.h"
 
+char* get_current_dir(){
+    // asking the os to get the size of the command , and then store it in the heap memory
+    DWORD required_size = GetCurrentDirectory(0 , NULL);
+    if (required_size == 0){
+        printf("\nFailed to get the Determined path , Error: %lu" , GetLastError());
+        return NULL;
+    }
+
+    // ask the heap memory to rent on the basis of the memory required
+    char* buffer = (char*)malloc(required_size * sizeof(char));
+    if (buffer == NULL){
+        printf("Memory allocation failed.\n");
+        return NULL;
+    }
+
+    // now filling out that buffer for execution.
+    DWORD result = GetCurrentDirectory(required_size , buffer);
+    if (result == 0){
+        printf("Failed to get the path of the current directory , Error: %lu" , GetLastError());
+        free(buffer);
+        return NULL;
+    }
+
+    return buffer;
+}
+
 bool is_builtin(char *command){
 
-    if (strcmp(command , "gyatt") == 0)
+    if (strcmp(command , "gyatt") == 0 || strcasecmp(command , "&gyatt") || strcasecmp(command , "gyatt.."))
         return true;
 
     else if (strcmp(command , "whereami") == 0)
@@ -43,27 +69,75 @@ bool is_builtin(char *command){
 
 void execute_builtin(char *command){
     char **args = parse_args(command);
-    if (strcmp(args[0] , "vibe") == 0)
+    int num_args = count_args(command);
+
+    // to get the version of the current shell
+    if (strcmp(args[0] , "vibe") == 0 && num_args==1)
         printf("\n$brainrot:/> NIGGA v1.0");
 
-    else if (strcasecmp(args[0] , "whereami") == 0){
-        // printf("whereami is called");
-        TCHAR currentDir[MAX_PATH];
-
-    // Fetch the current directory
-        DWORD result = GetCurrentDirectory(MAX_PATH, currentDir);
-
-    if (result == 0) {
-        printf("Failed to get current directory. Error code: %lu\n", GetLastError());
-        
-    } else if (result > MAX_PATH) {
-        printf("Buffer too small. Required size: %lu characters.\n", result);
-        
+    // to get the location of the current dir.
+    if (strcasecmp(args[0] , "whereami") == 0){
+        // getting the path of the current dir
+        char* path  = get_current_dir();
+        printf("\nCurrent dir: %s" , path);
+        free(path);
     }
 
-    // Print the directory path
-    // Note: %s works if your project uses ANSI characters. 
-    // If your project uses UNICODE, use wprintf(L"Current Directory: %s\n", currentDir);
-    printf("\nCurrent Directory: %s", currentDir);
+    // to navigate through the files.
+    // gyatt is same as "cd"
+    // gyatt has 3 version.
+    if (strcasecmp(args[0] , "gyatt") == 0 && num_args==2){
+        char* curr_dir = get_current_dir();
+        
+        // adding the strings
+        // "c:\User" + "\\" + "Desktop"
+        strcat(curr_dir , "\\");
+        strcat(curr_dir , args[1]);
+    
+        // using the SetCurrentDirectory for navigation
+    if (SetCurrentDirectory(curr_dir)) {
+        printf("\nCurrent Directory: %s"  , curr_dir);
+    } else {
+        printf("Failed to change directory. Error code: %lu\n", GetLastError());
     }
+    // freeing up the heap memory to prevent the memory leak.
+    free(curr_dir);
+    }
+
+    // TODO: for the navigation across the Whole system(global variable)
+    if (strcasecmp(args[0] , "&gyatt") == 0 && num_args==2){
+        if (SetCurrentDirectory(args[1])) 
+        printf("\nCurrent Directory: %s"  , args[1]);
+    else 
+        printf("Failed to change directory. Error code: %lu\n", GetLastError());
+    
+    }
+
+    if (strcasecmp(args[0] , "gyatt..") == 0 && num_args == 1){
+        char* curr_dir = get_current_dir();
+        int n = strlen(curr_dir);
+
+        // "C:/User/Docs" -> "C:/User/"
+        // removing the char until it's "\"
+        while (n >=2 && curr_dir[n] != '\\'){
+            curr_dir[n]='\0';
+            n--;
+            
+            // breaking or else "c:" will be remained
+            if (curr_dir[n] == '\\')    break;
+        }
+
+        // "c:/Users/" -> "C:/Users"
+        if (curr_dir[n] == '\\') curr_dir[n] = '\0';
+        
+        if (SetCurrentDirectory(curr_dir)) 
+        printf("\nCurrent Directory: %s"  , curr_dir);
+    else 
+        printf("Failed to change directory. Error code: %lu\n", GetLastError());
+
+        free(curr_dir);
+    }
+    
+
+    free(args);
 }
