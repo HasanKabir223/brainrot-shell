@@ -68,23 +68,24 @@ int main(){
         // stdin -> takes the input from the user
         fgets(command , LEN , stdin); // taking  the input from user 
 
+        
         // to lowercase the command
         to_lowercase(command);
-
+        
         // TODO: ['e' , 'x' , 'i' , 't' , '\n' , '\0'] to ['e' , 'x' , 'i' , 't' , '\0']
         size_t len = strlen(command);
         if (len > 0 && command[len - 1] == '\n'){
             command[len-1] = '\0';
         }
+        
+        // if (count_args(command)==0) printf("\n$brainrot:/> ");
 
         char **args = parse_args(command);
 
-        if (is_builtin(args[0]) == true){
+        if (is_builtin(args[0]) == true && count_args(command) > 0){
             printf("$brainrot: command %s found in built-in" , args[0]);
-            // pasing the command rather than the arguments
+            // pasing the  command rather than the arguments
             execute_builtin(command);
-            
-
         }else
             printf("'%s' not found" , args[0]);
 

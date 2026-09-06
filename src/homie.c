@@ -32,7 +32,7 @@ char* get_current_dir(){
 
 bool is_builtin(char *command){
 
-    if (strcmp(command , "gyatt") == 0 || strcasecmp(command , "&gyatt") || strcasecmp(command , "gyatt.."))
+    if (strcasecmp(command , "gyatt") == 0 || strcasecmp(command , "&gyatt") ==0 || strcasecmp(command , "gyatt..") == 0)
         return true;
 
     else if (strcmp(command , "whereami") == 0)
@@ -62,8 +62,8 @@ bool is_builtin(char *command){
     else if (strcmp(command , "kill") == 0)
         return true;
 
-    else
-        return false;
+    
+    return false;
     
 }
 
@@ -86,7 +86,7 @@ void execute_builtin(char *command){
     // to navigate through the files.
     // gyatt is same as "cd"
     // gyatt has 3 version.
-    if (strcasecmp(args[0] , "gyatt") == 0 && num_args==2){
+    if (strcasecmp(args[0] , "gyatt") == 0){
         char* curr_dir = get_current_dir();
         
         // adding the strings
@@ -98,7 +98,9 @@ void execute_builtin(char *command){
     if (SetCurrentDirectory(curr_dir)) {
         printf("\nCurrent Directory: %s"  , curr_dir);
     } else {
-        printf("Failed to change directory. Error code: %lu\n", GetLastError());
+        printf("\ncurr dir: %s" , curr_dir);
+        printf("\ncommand %s is not located" , command);
+        printf("\nFailed to change directory. Error code: %lu", GetLastError());
     }
     // freeing up the heap memory to prevent the memory leak.
     free(curr_dir);
@@ -109,17 +111,17 @@ void execute_builtin(char *command){
         if (SetCurrentDirectory(args[1])) 
         printf("\nCurrent Directory: %s"  , args[1]);
     else 
-        printf("Failed to change directory. Error code: %lu\n", GetLastError());
+        printf("\nFailed to change directory. Error code: %lu\n", GetLastError());
     
     }
 
-    if (strcasecmp(args[0] , "gyatt..") == 0 && num_args == 1){
+    if (strcasecmp(args[0] , "gyatt..") == 0){
         char* curr_dir = get_current_dir();
-        int n = strlen(curr_dir);
+        int n = strlen(curr_dir) - 1;
 
         // "C:/User/Docs" -> "C:/User/"
         // removing the char until it's "\"
-        while (n >=2 && curr_dir[n] != '\\'){
+        while (curr_dir[n] != '\\'){
             curr_dir[n]='\0';
             n--;
             
@@ -128,12 +130,16 @@ void execute_builtin(char *command){
         }
 
         // "c:/Users/" -> "C:/Users"
-        if (curr_dir[n] == '\\') curr_dir[n] = '\0';
+        // strlen(curr_dir) > 3 - to get the access of the root drive. "c:" and the "c:\" are two complete different thing
+        // we need "c:\" to access the root c drive
+        if (curr_dir[n] == '\\' && strlen(curr_dir) > 3) curr_dir[n] = '\0';
         
-        if (SetCurrentDirectory(curr_dir)) 
-        printf("\nCurrent Directory: %s"  , curr_dir);
-    else 
-        printf("Failed to change directory. Error code: %lu\n", GetLastError());
+        if (SetCurrentDirectory(curr_dir)){
+        char* path = get_current_dir();
+        printf("\nCurrent Directory: %s" , path);
+        free(path);
+        }else 
+        printf("\nFailed to change directory. Error code: %lu\n", GetLastError());
 
         free(curr_dir);
     }
