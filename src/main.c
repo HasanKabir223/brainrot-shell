@@ -78,7 +78,7 @@ int main(){
             command[len-1] = '\0';
         }
         
-        // if (count_args(command)==0) printf("\n$brainrot:/> ");
+        if (count_args(command)==0) continue;
 
         char **args = parse_args(command);
 
