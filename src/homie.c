@@ -98,7 +98,7 @@ void execute_builtin(char *command){
     if (SetCurrentDirectory(curr_dir)) {
         printf("\nCurrent Directory: %s"  , curr_dir);
     } else {
-        printf("\ncurr dir: %s" , curr_dir);
+        printf("\nTry with the '&gyatt'");
         printf("\ncommand %s is not located" , command);
         printf("\nFailed to change directory. Error code: %lu", GetLastError());
     }
@@ -142,6 +142,25 @@ void execute_builtin(char *command){
         printf("\nFailed to change directory. Error code: %lu\n", GetLastError());
 
         free(curr_dir);
+    }
+
+    if (strcasecmp(args[0] , "ls") == 0){
+        char* curr_dir = get_current_dir();
+        strcat(curr_dir , "\\*");
+
+        WIN32_FIND_DATA data;
+        HANDLE hFind = FindFirstFile(curr_dir, &data);      // DIRECTORY
+
+        if ( hFind != INVALID_HANDLE_VALUE ) {
+            int i = 0;
+            do {
+                i++;
+                if (i < 3) continue;
+                printf("\n%s" , data.cFileName);
+            } while (FindNextFile(hFind, &data));
+            FindClose(hFind);
+        }
+
     }
     
 
