@@ -1,0 +1,17 @@
+                         BrainRot
+                            │
+                       parse_args()
+                         baddie.c
+                            │
+                            ▼
+                       argv / args
+                            │
+                 ┌──────────┴──────────┐
+                 │                     │
+             BUILT-IN              EXTERNAL
+                 │                     │
+                 ▼                     ▼
+             homies.c              resolver.c
+                 │                     │
+                 ▼                     ▼
+          Windows APIs          CreateProcessA()

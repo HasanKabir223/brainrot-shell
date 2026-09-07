@@ -67,20 +67,20 @@ int main(){
         printf("\n$brainrot:/> ");
         // stdin -> takes the input from the user
         fgets(command , LEN , stdin); // taking  the input from user 
-
         
-        // to lowercase the command
-        to_lowercase(command);
-        
-        // TODO: ['e' , 'x' , 'i' , 't' , '\n' , '\0'] to ['e' , 'x' , 'i' , 't' , '\0']
         size_t len = strlen(command);
         if (len > 0 && command[len - 1] == '\n'){
             command[len-1] = '\0';
         }
-        
-        if (count_args(command)==0) continue;
 
+        if (count_args(command)==0) continue;
         char **args = parse_args(command);
+        
+        // to lowercase the command
+        to_lowercase(args[0]);
+        
+        // TODO: ['e' , 'x' , 'i' , 't' , '\n' , '\0'] to ['e' , 'x' , 'i' , 't' , '\0']
+        
 
         if (is_builtin(args[0]) == true && count_args(command) > 0){
             printf("$brainrot: command %s found in built-in" , args[0]);
@@ -98,7 +98,7 @@ int main(){
         //         command[len - 2] = '\0';
         // }
         // exiting the loop
-        if(strcmp(command , "exit") == 0)
+        if(strcasecmp(args[0] , "exit") == 0 || strcasecmp(args[0] , "skedaddle") == 0)
             exit(0);
 
         
@@ -116,9 +116,10 @@ int main(){
 
         // execute_external(command , check_bg);
 
-        
+        for(int i =0; args[i] != NULL; i++) free(args[i]);
+        free(args);
     }
-    
+    free(command);
     return 0;
 }
 

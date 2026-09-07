@@ -1,0 +1,20 @@
+$brainrot:/> cooked
+
+BrainRot built-ins:
+
+Navigation
+  gyatt <path> - same as cd 
+  gyatt.. - same as cd..
+  &gyatt - for the global navigation
+  whereami - get the address of the current directory
+  ls - same as dir
+
+Shell information
+  cooked - same as 'help' - prints all the pre-built commands
+  mog - clears the terminal
+  vibe - get the version
+  about - who has built this sh*t
+
+Misc
+  skedaddle
+  kill <PID>

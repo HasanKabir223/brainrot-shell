@@ -55,7 +55,7 @@ char **parse_args(char *command){
                 }
 
                 // copy the word
-                for (int k = 0; k < i; k++){
+                for (int k = start; k < i; k++){
                     output[index][k - start] = command[k];
                 }
 

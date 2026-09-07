@@ -93,12 +93,14 @@ void execute_builtin(char *command){
         
         // adding the strings
         // "c:\User" + "\\" + "Desktop"
-        strcat(curr_dir , "\\");
-        strcat(curr_dir , args[1]);
+        char new_path[MAX_PATH];
+        snprintf(new_path , MAX_PATH , "%s\\%s" , curr_dir , args[1]);
     
         // using the SetCurrentDirectory for navigation
-    if (SetCurrentDirectory(curr_dir)) {
-        printf("\nCurrent Directory: %s"  , curr_dir);
+    if (SetCurrentDirectory(new_path)) {
+        char* curr_path = get_current_dir();
+        printf("\nCurrent Directory: %s"  , curr_path);
+        free(curr_path);
     } else {
         printf("\nTry with the '&gyatt'");
         printf("\ncommand %s is not located" , command);
@@ -148,11 +150,13 @@ void execute_builtin(char *command){
 
     if (strcasecmp(args[0] , "ls") == 0){
         char* curr_dir = get_current_dir();
-        // get the access of the whol directory
-        strcat(curr_dir , "\\*");
+        
+        // get the access of the whole directory
+        char new_path[MAX_PATH];
+        snprintf(new_path , MAX_PATH , "%s\\*" , curr_dir);
 
         WIN32_FIND_DATA data;
-        HANDLE hFind = FindFirstFile(curr_dir, &data);      // DIRECTORY
+        HANDLE hFind = FindFirstFile(new_path, &data);      // DIRECTORY
 
         if ( hFind != INVALID_HANDLE_VALUE ) {
             int i = 0;
@@ -170,8 +174,6 @@ void execute_builtin(char *command){
     //     printf("\nenter the file");
     //     FILE *fptr;
 
-    //     fptr = fopen("C:\\Users\\Hasan\\Projects\\shell\\brainrot-shell\\cooked.txt" , "r");
-
     //     if (fptr == NULL)   printf("\nError: %lu" , GetLastError());
 
     //     char buffer[2048];
@@ -184,10 +186,10 @@ void execute_builtin(char *command){
         
     // }
 
-    if (strcasecmp(args[0] , "mog") == 0 && num_args==1){
+    if (strcasecmp(args[0] , "mog") == 0){
         system("cls");
     }
     
-
+    for (int i =0; args[i] != NULL; i++) free(args[i]);
     free(args);
 }
