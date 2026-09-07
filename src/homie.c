@@ -3,6 +3,8 @@
 #include <string.h>
 #include <windows.h>
 #include "baddie.h"
+#include <stdlib.h>
+#include <unistd.h>
 
 char* get_current_dir(){
     // asking the os to get the size of the command , and then store it in the heap memory
@@ -146,6 +148,7 @@ void execute_builtin(char *command){
 
     if (strcasecmp(args[0] , "ls") == 0){
         char* curr_dir = get_current_dir();
+        // get the access of the whol directory
         strcat(curr_dir , "\\*");
 
         WIN32_FIND_DATA data;
@@ -160,7 +163,29 @@ void execute_builtin(char *command){
             } while (FindNextFile(hFind, &data));
             FindClose(hFind);
         }
+        free(curr_dir);
+    }
 
+    // if (strcasecmp("cooked" , args[0])==0 && num_args==1){
+    //     printf("\nenter the file");
+    //     FILE *fptr;
+
+    //     fptr = fopen("C:\\Users\\Hasan\\Projects\\shell\\brainrot-shell\\cooked.txt" , "r");
+
+    //     if (fptr == NULL)   printf("\nError: %lu" , GetLastError());
+
+    //     char buffer[2048];
+
+    //     while (fgets(buffer , sizeof(buffer) , fptr) != NULL){
+    //         printf("%s" , buffer);
+    //     }
+
+    //     fclose(fptr);
+        
+    // }
+
+    if (strcasecmp(args[0] , "mog") == 0 && num_args==1){
+        system("cls");
     }
     
 
