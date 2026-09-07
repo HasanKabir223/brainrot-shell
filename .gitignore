@@ -1,6 +1,4 @@
 # Compiled executables & directories
-*.exe
-bin/
 build/
 *.o
 *.obj
